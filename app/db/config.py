@@ -33,7 +33,25 @@ class UserTable:
     """
 
 # Add more table classes here...
+class MessagesTable:
 
+    NAME = "messages"
+
+    SCHEMA = """
+        CREATE TABLE messages (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id         INTEGER NOT NULL,
+            title           TEXT NOT NULL,
+            body            TEXT NOT NULL,
+
+            FOREIGN KEY(user_id) REFERENCES user(id)
+
+        )
+    """
+
+    SEED_DATA = """
+        INSERT INTO messages (user_id, title, body)
+    """
 
 
 #----------------------------------------------------------------------------

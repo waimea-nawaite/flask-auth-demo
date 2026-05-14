@@ -25,7 +25,7 @@ def show_welcome():
 #-----------------------------------------------------------
 # Signup Page
 #-----------------------------------------------------------
-@app.get("/user/new")
+@app.get("/user/signup")
 def show_signup_form():
     return render_template("pages/user_form.jinja")
 
@@ -102,8 +102,27 @@ def login_user():
 
         flash("Login successful", "success")
         return redirect("/")
+    
 
+#-----------------------------------------------------------
+# login_required decorator to required routes
+#-----------------------------------------------------------
+    
+@app.get("/admin")
+@login_required
+def admin_page():
+    # Can only access this route if logged in
+    ...
 
+#-----------------------------------------------------------
+# Handle user logout
+#-----------------------------------------------------------
+
+@app.get("/logout")
+def logout_admin():
+    session.clear()
+    flash(f"You have been logged out", "success")
+    return redirect("/")
 #-----------------------------------------------------------
 # Creature list page - Show all the creatures
 #-----------------------------------------------------------
