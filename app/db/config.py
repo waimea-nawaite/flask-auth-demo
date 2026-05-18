@@ -33,7 +33,7 @@ class UserTable:
     """
 
 # Add more table classes here...
-class MessagesTable:
+class MessageTable:
 
     NAME = "messages"
 

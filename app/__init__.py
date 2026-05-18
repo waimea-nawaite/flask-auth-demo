@@ -25,7 +25,7 @@ def show_welcome():
 #-----------------------------------------------------------
 # Signup Page
 #-----------------------------------------------------------
-@app.get("/user/signup")
+@app.get("/user/new")
 def show_signup_form():
     return render_template("pages/user_form.jinja")
 
@@ -35,6 +35,13 @@ def show_signup_form():
 @app.get("/user/login")
 def show_login_form():
     return render_template("pages/login_page.jinja")
+
+#-----------------------------------------------------------
+# New Message Page
+#-----------------------------------------------------------
+@app.get("/message/new")
+def show_message_form():
+    return render_template("pages/message_form.jinja")
 
 #-----------------------------------------------------------
 # Handle user signup
@@ -101,6 +108,41 @@ def login_user():
         }
 
         flash("Login successful", "success")
+        return redirect("/")
+    
+#-----------------------------------------------------------
+# Handle user message
+#-----------------------------------------------------------
+    
+@app.post("/message")
+def add_message():
+    # Get form data
+    title    = request.form.get('title', '').strip()
+    body     = request.form.get('body', '').strip()
+
+    # Validate data
+    if not title:
+        flash("Title is required", "error")
+        return redirect("/message/new")
+
+    if len(title) > 40:
+        flash("Title is too long (max 40 chars)", "error")
+        return redirect("/message/new")
+
+    # Escape text inputs
+    title = html.escape(title)
+    body = html.escape(body)
+
+    # Add to the database
+    with connect_db() as db:
+        sql = """
+            INSERT INTO messages (title, body)
+            VALUES (?, ?)
+        """
+        params = (title, body)
+        db.execute(sql, params)
+
+        flash(f"Message added")
         return redirect("/")
     
 

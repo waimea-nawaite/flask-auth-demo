@@ -33,11 +33,12 @@
 
         <nav>
             {% if session.logged_in %}
-                <li>Welcome, {{ session.user.forename }}!</li>
+                <li>Welcome, {{ session.users.forename }}!</li>
                 <li><a href="/admin">Admin</a></li>
                 <li><a href="/logout">Logout</a></li>
+                <li><a href="/message/new">Message</a></li>
             {% else %}
-                <li><a href="/login">Login</a></li>
+                <li><a href="/user/login">Login</a></li>
                 <li><a href="/user/new">Sign-Up</a></li>
             {% endif %} 
         </nav>

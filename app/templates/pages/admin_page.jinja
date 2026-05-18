@@ -1,0 +1,15 @@
+{#=====================================================
+  Help page
+=====================================================#}
+
+{% extends 'pages/base.jinja' %}
+
+
+{% block content %}
+
+    {% if session.logged_in %}
+        <p>Welcome, {{ session.users.forename }}!</p>
+    {% endif %} 
+
+{% endblock %}
+
