@@ -51,6 +51,7 @@ class MessageTable:
 
     SEED_DATA = """
         INSERT INTO messages (user_id, title, body)
+        VALUES (1, "Hello!", "First post!")
     """
 
 
@@ -71,6 +72,7 @@ class MessageTable:
 
 TABLES = [
     UserTable,
+    MessageTable,
     # Add more tables here...
 ]
 

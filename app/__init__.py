@@ -101,7 +101,8 @@ def login_user():
             return redirect("/login")
 
         session["logged_in"] = True
-        session["users"] = {
+        session["user"] = {
+            "id":       user["id"],
             "username": username,
             "forename": user["forename"],
             "surname":  user["surname"],
@@ -133,17 +134,33 @@ def add_message():
     title = html.escape(title)
     body = html.escape(body)
 
+    # User id is in the session
+    user_id = session["user"]["id"]
+
     # Add to the database
     with connect_db() as db:
         sql = """
-            INSERT INTO messages (title, body)
-            VALUES (?, ?)
+            INSERT INTO messages (title, body, user_id)
+            VALUES (?, ?, ?)
         """
-        params = (title, body)
+        params = (title, body, user_id)
         db.execute(sql, params)
 
         flash(f"Message added")
         return redirect("/")
+    
+
+@app.get("/messages")
+def show_all_messages():
+    with connect_db() as db:
+        sql = """
+            SELECT id, title, body
+            FROM messages
+        """
+        params = ()
+        messages = db.execute(sql, params).fetchall()
+
+        return render_template("pages/message_list.jinja", messages=messages)
     
 
 #-----------------------------------------------------------
