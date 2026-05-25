@@ -72,7 +72,7 @@ def add_user():
         db.execute(sql, params)
 
         flash("Account created. Please login", "success")
-        return redirect("/login")
+        return redirect("/user/login")
 
 #-----------------------------------------------------------
 # Handle user login
@@ -94,11 +94,11 @@ def login_user():
 
         if not user:
             flash(f"Unknown user", "error")
-            return redirect("/login")
+            return redirect("/user/login")
 
         if not check_password_hash(user["password_hash"], password):
             flash(f"Incorrect password", "error")
-            return redirect("/login")
+            return redirect("/user/login")
 
         session["logged_in"] = True
         session["user"] = {
@@ -149,6 +149,9 @@ def add_message():
         flash(f"Message added")
         return redirect("/")
     
+#-----------------------------------------------------------
+# See all the messages
+#-----------------------------------------------------------
 
 @app.get("/messages")
 def show_all_messages():
@@ -162,6 +165,22 @@ def show_all_messages():
 
         return render_template("pages/message_list.jinja", messages=messages)
     
+
+#-----------------------------------------------------------
+# Delete a message
+#-----------------------------------------------------------
+
+@app.get("/delete/<int:id>")
+def delete_a_message(id):
+    with connect_db() as client:
+
+        sql = "DELETE FROM messages WHERE id=? AND user_id=?"
+        params = [id, user_id]
+        client.execute(sql, params)
+
+        # Go back to the home page
+        flash("Message deleted", "success")
+        return redirect("/messages")
 
 #-----------------------------------------------------------
 # login_required decorator to required routes

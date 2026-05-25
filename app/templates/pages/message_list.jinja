@@ -7,13 +7,16 @@
 
 <h2>List of Messages</h2>
 
-    <section id="messages">
+    <section id="messages-list">
 
         {% for message in messages %}
 
-            <div class="message">
+            <div class="message-item">
                 <h3>{{ message.title }}</h3>
-                <p>Text:{{ message.body }}</p>
+                <p>{{ message.body }}</p>
+                <footer>
+                    <a href="/delete/{{ message.id }}" onclick="return confirm('Really delete?');">Delete</a>
+                </footer>
             </div>
 
         {% else %}
