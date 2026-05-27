@@ -170,6 +170,14 @@ form {
         h3 {
             color: var(--accent-col);
         }
+
+        button {
+            background-color: var(--accent-col);
+            color: var(--text-col-inv);
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            margin-top: 1rem;
+        }
     }
 }
 

@@ -147,7 +147,7 @@ def add_message():
         db.execute(sql, params)
 
         flash(f"Message added")
-        return redirect("/")
+        return redirect("/message/new")
     
 #-----------------------------------------------------------
 # See all the messages
@@ -157,8 +157,15 @@ def add_message():
 def show_all_messages():
     with connect_db() as db:
         sql = """
-            SELECT id, title, body
+            SELECT 
+                messages.id     AS mid,
+                messages.title,
+                messages.body,
+                users.id         AS uid,
+                users.forename
+            
             FROM messages
+            JOIN users ON messages.user_id = users.id
         """
         params = ()
         messages = db.execute(sql, params).fetchall()
@@ -170,16 +177,28 @@ def show_all_messages():
 # Delete a message
 #-----------------------------------------------------------
 
-@app.get("/delete/<int:id>")
-def delete_a_message(id):
-    with connect_db() as client:
+@app.get("/message/delete/<int:id>")
+@login_required
+def delete(id):
+    with connect_db() as db:
+        sql = """
+            SELECT user_id
+            FROM messages
+            WHERE id=?
+        """
+        params = (id,)
+        message = db.execute(sql, params).fetchone()
 
-        sql = "DELETE FROM messages WHERE id=? AND user_id=?"
-        params = [id, user_id]
-        client.execute(sql, params)
+        if message and message["user_id"] == session["user"]["id"]:
+            sql = """
+                DELETE FROM
+                messages
+                WHERE id=?
+            """
+            params = [id]
+            db.execute(sql, params)
+            flash("The message has been deleted", "success")
 
-        # Go back to the home page
-        flash("Message deleted", "success")
         return redirect("/messages")
 
 #-----------------------------------------------------------
