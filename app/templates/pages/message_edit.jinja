@@ -7,21 +7,21 @@
 
 {% block content %}
 
-    <form method="post" action="/message/edit">
-      <h3>Edit Message</h3>
+<form method="POST">
 
-      <label>
-          Title
-          <input name="title" type="text" placeholder="e.g. Jerry" required>
-      </label>
+    <label>Title</label>
+    <input type="text"
+           name="title"
+           value="{{ message.title }}">
 
-      <label>
-          Body
-          <textarea name="body" placeholder="e.g. I dont like him" required></textarea>
-      </label>
+    <label>Body</label>
+    <textarea name="body">{{ message.body }}</textarea>
 
-      <button>Done!</button>
-  </form>
+    <button type="submit">
+        Save Changes
+    </button>
+
+</form>
 
 {% endblock %}
 

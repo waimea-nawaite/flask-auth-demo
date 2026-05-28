@@ -44,6 +44,13 @@ def show_message_form():
     return render_template("pages/message_form.jinja")
 
 #-----------------------------------------------------------
+# Edit a Message Page
+#-----------------------------------------------------------
+@app.get("/message/edit")
+def edit_message_form():
+    return render_template("pages/message_edit.jinja")
+
+#-----------------------------------------------------------
 # Handle user signup
 #-----------------------------------------------------------
 @app.post("/user")
@@ -161,7 +168,7 @@ def show_all_messages():
                 messages.id     AS mid,
                 messages.title,
                 messages.body,
-                users.id         AS uid,
+                users.id        AS uid,
                 users.forename
             
             FROM messages
@@ -201,6 +208,51 @@ def delete(id):
 
         return redirect("/messages")
 
+
+#-----------------------------------------------------------
+# Edit message
+#-----------------------------------------------------------
+@app.get("/message/edit/<int:id>")
+@login_required
+def edit(id):
+    with connect_db() as db:
+        sql = """
+            SELECT
+                messages.id     AS mid,
+                messages.title,
+                messages.body,
+                users.id        AS uid,
+                users.forename
+
+            FROM messages
+            JOIN users ON messages.user_id = users.id
+            WHERE messages.id=?
+    """
+        params = [id]
+        message = db.execute(sql, params).fetchone()
+        return render_template("pages/message_edit.jinja", message=message)
+
+#-----------------------------------------------------------
+# Post Edit
+#-----------------------------------------------------------
+@app.post("/message/edit/<int:id>")
+@login_required
+def edit_post(id):
+    title = request.form.get("title", "").strip()
+    body  = request.form.get("body", "").strip()
+
+    with connect_db() as db:
+        sql = """
+            UPDATE messages
+            SET title=?, body=?
+            WHERE id=?
+        """
+        params = [title, body, id]
+
+        db.execute(sql, params)
+
+        flash("Message updated", "success")
+    return redirect("/messages")
 #-----------------------------------------------------------
 # login_required decorator to required routes
 #-----------------------------------------------------------
